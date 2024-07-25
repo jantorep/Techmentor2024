@@ -1,0 +1,68 @@
+name: "Deploy HMN New Landing Zone"
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - landingZones/hmn/*.json
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ENV_FILE: ".env"
+  IS_PULL_REQUEST: "${{ github.event_name == 'pull_request' }}"
+
+jobs:
+  Deploy_New_LandingZone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Remove Quotation Marks from Environment File"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Write-Host $ENV_FILE
+            (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+          azPSVersion: "latest"
+
+      - name: Import Environment Variables from File
+        run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: "OIDC Login To Tenant"
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.HMNTAZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.HMNTAZURE_TENANT_ID }}
+          subscription-id: ${{ env.HMNTEST_MANAGEMENT_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: "Get Available Address Space From IPAM"
+        id: getipam
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\landingZones\HMNTestfetchAddressPrefix.ps1
+          azPSVersion: "latest"
+
+      - name: "Get Latest Landing Zone Parameter File"
+        id: getlzparameter
+        shell: pwsh
+        run: |
+          $param = Get-ChildItem -Path .\landingZones\hmntest -Filter *.json | Sort-Object Name -Descending | Select-Object -Last 1
+          Write-Output "parameter_file=$($param)" >> $Env:GITHUB_OUTPUT
+
+      - name: "Deploy Landing Zone"
+        id: deploylz
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\landingZones\Deploy-LandingZone.ps1 -Location ${{ env.LOCATION}} -TopLevelMGPrefix ${{ env.HMNTEST_TOP_LEVEL_MG_PREFIX}} -AddressPrefix ${{ steps.getipam.outputs.cidr}} -TemplateFile ${{ env.HMNTEST_TEMPLATE_FILE}} -TemplateParameterFile ${{ steps.getlzparameter.outputs.parameter_file}}
+          azPSVersion: "latest"
