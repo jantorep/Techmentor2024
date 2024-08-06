@@ -145,7 +145,7 @@
       "value": true
     },
     "parVirtualNetworkIdToLink": {
-      "value": "/subscriptions/bd8a61de-4021-441f-8432-d97cd53772a9/resourceGroups/rg-ide-noea-network-01/providers/Microsoft.Network/virtualNetworks/rg-ide-noea-network-01"
+      "value": "/subscriptions/bd8a61de-4021-441f-8432-d97cd53772a9/resourceGroups/rg-ide-noea-network-01/providers/Microsoft.Network/virtualNetworks/vnet-ide-noea-01"
     },
     "parTags": {
       "value": {
