@@ -1,4 +1,4 @@
-name: ALZ-Bicep-4-Platform-prodvnet-custom
+name: ALZ-Bicep-4a-Platform-prodvnet-custom
 
 on:
   push:
