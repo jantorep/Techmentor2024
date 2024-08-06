@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "value": "vnet-prod-noea-01"
+        },
+        "lock": {
+            "value": "CanNotDelete"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.160.32.0/19"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "CorpSubnet",
+                    "addressPrefix": "10.160.32.0/20",
+                    "networkSecurityGroupId": "/subscriptions/90b3ab11-9c0d-404b-98bf-2ab1356974fa/resourceGroups/rg-prod-noea-network-01/providers/Microsoft.Network/networkSecurityGroups/nsg-prod-noea-01"
+                },
+                {
+                    "name": "PrivateEndpointSubnet",
+                    "addressPrefix": "10.160.48.0/23",
+                    "networkSecurityGroupId": "/subscriptions/90b3ab11-9c0d-404b-98bf-2ab1356974fa/resourceGroups/rg-prod-noea-network-01/providers/Microsoft.Network/networkSecurityGroups/nsg-prod-noea-01"
+                }
+            ]
+        },
+        "dnsServers": {
+            "value": [
+                "10.160.4.4",
+                "10.160.4.5"
+            ]
+        },
+        "nsgname": {
+            "value": "nsg-prod-noea-01"
+        }
+    }
+}

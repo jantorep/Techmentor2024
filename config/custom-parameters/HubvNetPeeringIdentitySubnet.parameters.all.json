@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualWanHubSubscriptionId": {
+      "value": "4e85c89d-85e4-4ff8-85ba-da26e2c61777"
+    },
+    "vnetsubscriptionId": {
+      "value": "187dfb65-11a6-4fe3-a47a-0632091f2728"
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "rg-ide-noea-network-01"
+    },
+    "virtualNetworkName": {
+      "value": "vnet-ide-noea-01"
+    },
+    "virtualWanHubConnectionName": {
+      "value": "vnet-ide-noea-01-peering"
+    },
+    "hubNetworkResourceId": {
+      "value": "/subscriptions/4e85c89d-85e4-4ff8-85ba-da26e2c61777/resourceGroups/rg-con-noea-network-01/providers/Microsoft.Network/virtualHubs/vwan-con-noea-01"
+    },
+    "virtualNetworkVwanAssociatedRouteTableResourceId": {
+      "value": ""
+    },
+    "virtualNetworkVwanPropagatedRouteTablesResourceIds": {
+      "value": []
+    },
+    "virtualNetworkVwanPropagatedLabels": {
+      "value": []
+    },
+    "virtualWanHubResourceGroupName": {
+      "value": "rg-con-noea-network-01"
+    },
+    "virtualNetworkVwanEnableInternetSecurity": {
+      "value": true
+    },
+    "disableTelemetry": {
+      "value": false
+    }
+  }
+}

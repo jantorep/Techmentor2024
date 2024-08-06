@@ -46,7 +46,7 @@
           "parAzFirewallDnsServers": [],
           "parAzFirewallIntelMode": "Alert",
           "parAzFirewallDnsProxyEnabled": true,
-          "parAzFirewallTier": "Standard",
+          "parAzFirewallTier": "Premium",
           "parAzFirewallAvailabilityZones": []
         }
       ]

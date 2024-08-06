@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "parLocation": {
+      "value": "norwayeast"
+    },
+    "parResourceGroupName": {
+      "value": "rg-ide-noea-network-01"
+    },
+    "parTags": {
+      "value": {
+        "Environment": "Identity"
+      }
+    },
+    "parTelemetryOptOut": {
+      "value": false
+    }
+  }
+}

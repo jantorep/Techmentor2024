@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "parLocation": {
+      "value": "norwayeast"
+    },
+    "parAzFirewallTier": {
+      "value": "Premium"
+    },
+    "parAzFirewallIntelMode": {
+      "value": "Alert"
+    },
+    "parAzFirewallDnsProxyEnabled": {
+      "value": true
+    },
+    "parAzFirewallDnsServers": {
+      "value": [
+        "10.160.4.4",
+        "10.160.4.5"
+      ]
+    },
+    "parrootAzFirewallPoliciesName": {
+      "value": "afwp-con-noea-root-01"
+    },
+    "parchildAzFirewallPoliciesName": {
+      "value": "afwp-con-noea-child-01"
+    },
+    "parTags": {
+      "value": {
+        "Environment": "Connectivity"
+      }
+    }
+  }
+}

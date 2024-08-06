@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "value": "vnet-ide-noea-01"
+        },
+        "lock": {
+            "value": "CanNotDelete"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.160.4.0/22"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "IdentitySubnet",
+                    "addressPrefix": "10.160.4.0/24",
+                    "networkSecurityGroupId": "/subscriptions/bd8a61de-4021-441f-8432-d97cd53772a9/resourceGroups/rg-ide-noea-network-01/providers/Microsoft.Network/networkSecurityGroups/nsg-ide-noea-01"
+                }
+            ]
+        },
+        "dnsServers": {
+            "value": [
+                "10.160.4.4",
+                "10.160.4.5"
+            ]
+        },
+        "nsgname": {
+            "value": "nsg-ide-noea-01"
+        }
+    }
+}
