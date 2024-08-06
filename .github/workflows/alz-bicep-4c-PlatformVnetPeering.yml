@@ -1,0 +1,133 @@
+name: ALZ-Bicep-4c-Platformvnetpeering-custom
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "config/custom-parameters/HubvNetPeeringIdentitySubnet.parameters.all.json"
+      - "config/custom-parameters/HubvNetPeeringManagementSubnet.parameters.all.json"
+      - "config/custom-parameters/HubvNetPeeringProductionSubnet.parameters.all.json"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "config/custom-parameters/HubvNetPeeringIdentitySubnet.parameters.all.json"
+      - "config/custom-parameters/HubvNetPeeringManagementSubnet.parameters.all.json"
+      - "config/custom-parameters/HubvNetPeeringProductionSubnet.parameters.all.json"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  ENV_FILE: ".env"
+  IS_PULL_REQUEST: "${{ github.event_name == 'pull_request' }}"
+
+jobs:
+  DeployIdentityVnetPeering:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Remove Quotation Marks from Environment File"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Write-Host $ENV_FILE
+            (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+          azPSVersion: "11.5.0"
+
+      - name: Import Environment Variables from File
+        run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: OIDC Login to Tenant
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.CONNECTIVITY_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: "Identity Resource Group Deployment"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\Deploy-HubvNetPeeringIdentitySubnet.ps1
+          azPSVersion: "11.5.0"
+
+  DeployManagementVnetPeering:
+      needs: DeployIdentityVnetPeering
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repo
+          uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+
+        - name: "Remove Quotation Marks from Environment File"
+          uses: azure/powershell@v1
+          with:
+            inlineScript: |
+              Write-Host $ENV_FILE
+              (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+            azPSVersion: "11.5.0"
+
+        - name: Import Environment Variables from File
+          run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+        - name: OIDC Login to Tenant
+          uses: azure/login@v1
+          with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ env.CONNECTIVITY_SUBSCRIPTION_ID }}
+            enable-AzPSSession: true
+
+        - name: "Management Resource Group Deployment"
+          uses: azure/powershell@v1
+          with:
+            inlineScript: |
+              .\pipeline-scripts\Deploy-HubvNetPeeringManagementSubnet.ps1
+            azPSVersion: "11.5.0"
+
+  DeployProductionVnetPeering:
+    needs: DeployManagementVnetPeering
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Remove Quotation Marks from Environment File"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Write-Host $ENV_FILE
+            (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+          azPSVersion: "11.5.0"
+
+      - name: Import Environment Variables from File
+        run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: OIDC Login to Tenant
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.CONNECTIVITY_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: "Production Resource Group Deployment"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\Deploy-HubvNetPeeringProductionSubnet.ps1
+          azPSVersion: "11.5.0"
+  

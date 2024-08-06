@@ -1,0 +1,242 @@
+name: ALZ-Bicep-4-Platform-prodvnet-custom
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "config/custom-parameters/resourceGroupIdentity.parameters.all.json"
+      - "config/custom-parameters/resourceGroupManagement.parameters.all.json"
+      - "config/custom-parameters/resourceGroupProduction.parameters.all.json"
+      - "config/custom-parameters/vnet.identity.parameters.json"
+      - "config/custom-parameters/vnet.management.parameters.json"
+      - "config/custom-parameters/vnet.production.parameters.json"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "config/custom-parameters/resourceGroupIdentity.parameters.all.json"
+      - "config/custom-parameters/resourceGroupManagement.parameters.all.json"
+      - "config/custom-parameters/resourceGroupProduction.parameters.all.json"
+      - "config/custom-parameters/vnet.identity.parameters.json"
+      - "config/custom-parameters/vnet.management.parameters.json"
+      - "config/custom-parameters/vnet.production.parameters.json"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  ENV_FILE: ".env"
+  IS_PULL_REQUEST: "${{ github.event_name == 'pull_request' }}"
+
+jobs:
+  DeployIdentityVnetRG:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Remove Quotation Marks from Environment File"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Write-Host $ENV_FILE
+            (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+          azPSVersion: "11.5.0"
+
+      - name: Import Environment Variables from File
+        run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: OIDC Login to Tenant
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.IDENTITY_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: "Identity Resource Group Deployment"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\Deploy-IdentityvnetRG.ps1
+          azPSVersion: "11.5.0"
+
+  DeployManagementVnetRG:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repo
+          uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+
+        - name: "Remove Quotation Marks from Environment File"
+          uses: azure/powershell@v1
+          with:
+            inlineScript: |
+              Write-Host $ENV_FILE
+              (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+            azPSVersion: "11.5.0"
+
+        - name: Import Environment Variables from File
+          run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+        - name: OIDC Login to Tenant
+          uses: azure/login@v1
+          with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ env.MANAGEMENT_SUBSCRIPTION_ID }}
+            enable-AzPSSession: true
+
+        - name: "Management Resource Group Deployment"
+          uses: azure/powershell@v1
+          with:
+            inlineScript: |
+              .\pipeline-scripts\Deploy-ManagementvnetRG.ps1
+            azPSVersion: "11.5.0"
+
+  DeployProductionVnetRG:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Remove Quotation Marks from Environment File"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Write-Host $ENV_FILE
+            (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+          azPSVersion: "11.5.0"
+
+      - name: Import Environment Variables from File
+        run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: OIDC Login to Tenant
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.PRODUCTION_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: "Production Resource Group Deployment"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\Deploy-ProductionvnetRG.ps1
+          azPSVersion: "11.5.0"
+
+  IdentityVnetDeployment:
+    needs: DeployIdentityVnetRG
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Remove Quotation Marks from Environment File"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Write-Host $ENV_FILE
+            (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+          azPSVersion: "11.5.0"
+
+      - name: Import Environment Variables from File
+        run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: OIDC Login to Tenant
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.IDENTITY_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+
+      - name: "Identity Vnet Deployment"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\Deploy-IdentityVnet.ps1
+          azPSVersion: "11.5.0"
+  
+  ManagementVnetDeployment:
+    needs: DeployManagementVnetRG
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Remove Quotation Marks from Environment File"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Write-Host $ENV_FILE
+            (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+          azPSVersion: "11.5.0"
+
+      - name: Import Environment Variables from File
+        run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: OIDC Login to Tenant
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.MANAGEMENT_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: "Management Vnet Deployment"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\Deploy-ManagementVnet.ps1
+          azPSVersion: "11.5.0"
+
+  ProductionVnetDeployment:
+    needs: DeployProductionVnetRG
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Remove Quotation Marks from Environment File"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Write-Host $ENV_FILE
+            (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
+          azPSVersion: "11.5.0"
+
+      - name: Import Environment Variables from File
+        run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
+
+      - name: OIDC Login to Tenant
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.PRODUCTION_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: "Production Vnet Deployment"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\Deploy-ProductionVnet.ps1
+          azPSVersion: "11.5.0"

@@ -39,13 +39,13 @@ jobs:
           inlineScript: |
             Write-Host $ENV_FILE
             (Get-Content -Path $env:ENV_FILE -Encoding UTF8) | ForEach-Object {$_ -replace '"',''} | Out-File -FilePath $env:ENV_FILE -Encoding UTF8
-          azPSVersion: "latest"
+          azPSVersion: "11.5.0"
 
       - name: Import Environment Variables from File
         run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
 
       - name: OIDC Login to Tenant
-        uses: azure/login@v2
+        uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -57,11 +57,18 @@ jobs:
         with:
           inlineScript: |
             .\pipeline-scripts\Deploy-ALZConnectivityResourceGroup.ps1
-          azPSVersion: "latest"
+          azPSVersion: "11.5.0"
+
+      - name: "PrivateDNSResourceGroupDeployment"
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            .\pipeline-scripts\Deploy-ALZPrivateDNSResourceGroup.ps1
+          azPSVersion: "11.5.0"
 
       - name: "Hub (VWAN) Deployment"
         uses: azure/powershell@v1
         with:
           inlineScript: |
             .\pipeline-scripts\Deploy-ALZHub-VWAN.ps1
-          azPSVersion: "latest"
+          azPSVersion: "11.5.0"
