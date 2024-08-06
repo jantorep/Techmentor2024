@@ -52,12 +52,16 @@ jobs:
       - name: Import Environment Variables from File
         run: cat ${{ env.ENV_FILE }} >> $GITHUB_ENV
 
+      - name: Use environment variable
+        run: |
+          echo "The value of GITHUB_ENV is $GITHUB_ENV"
+
       - name: OIDC Login to Tenant
         uses: azure/login@v2.1.1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ env.MANAGEMENT_SUBSCRIPTION_ID }}
+          subscription-id: ${{ secrets.MANAGEMENT_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
       - name: "Management Groups Deployment"
@@ -88,12 +92,12 @@ jobs:
             .\pipeline-scripts\Deploy-ALZCustomPolicyDefinitions.ps1
           azPSVersion: "latest"
 
-      - name: "Custom Role Definitions Deployment"
-        uses: azure/powershell@v1
-        with:
-          inlineScript: |
-            .\pipeline-scripts\Deploy-ALZCustomRoleDefinitions.ps1
-          azPSVersion: "latest"
+      # - name: "Custom Role Definitions Deployment"
+      #   uses: azure/powershell@v1
+      #   with:
+      #     inlineScript: |
+      #       .\pipeline-scripts\Deploy-ALZCustomRoleDefinitions.ps1
+      #     azPSVersion: "latest"
 
       - name: "Custom Management Group Diagnostic Settings"
         uses: azure/powershell@v1
