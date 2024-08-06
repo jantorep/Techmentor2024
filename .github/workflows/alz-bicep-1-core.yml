@@ -9,7 +9,7 @@ on:
       - "config/custom-parameters/resourceGroupLoggingAndSentinel.parameters.all.json"
       - "config/custom-parameters/logging.parameters.all.json"
       - "config/custom-parameters/customPolicyDefinitions.parameters.all.json"
-      - "config/custom-parameters/customRoleDefinitions.parameters.all.json"
+      # - "config/custom-parameters/customRoleDefinitions.parameters.all.json"
       - "config/custom-parameters/mgDiagSettingsAll.parameters.all.json"
   pull_request:
     branches:
@@ -19,7 +19,7 @@ on:
       - "config/custom-parameters/resourceGroupLoggingAndSentinel.parameters.all.json"
       - "config/custom-parameters/logging.parameters.all.json"
       - "config/custom-parameters/customPolicyDefinitions.parameters.all.json"
-      - "config/custom-parameters/customRoleDefinitions.parameters.all.json"
+      # - "config/custom-parameters/customRoleDefinitions.parameters.all.json"
       - "config/custom-parameters/mgDiagSettingsAll.parameters.all.json"
   workflow_dispatch:
 
