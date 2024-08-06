@@ -10,7 +10,8 @@
     },
     "parTags": {
       "value": {
-        "Environment": "Management"
+        "Environment": "Management",
+        "Workload": "Logging"
       }
     },
     "parTelemetryOptOut": {
