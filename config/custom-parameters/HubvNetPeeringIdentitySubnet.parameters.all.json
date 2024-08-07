@@ -6,7 +6,7 @@
       "value": "4e85c89d-85e4-4ff8-85ba-da26e2c61777"
     },
     "vnetsubscriptionId": {
-      "value": "187dfb65-11a6-4fe3-a47a-0632091f2728"
+      "value": "bd8a61de-4021-441f-8432-d97cd53772a9"
     },
     "virtualNetworkResourceGroupName": {
       "value": "rg-ide-noea-network-01"
@@ -18,7 +18,7 @@
       "value": "vnet-ide-noea-01-peering"
     },
     "hubNetworkResourceId": {
-      "value": "/subscriptions/4e85c89d-85e4-4ff8-85ba-da26e2c61777/resourceGroups/rg-con-noea-network-01/providers/Microsoft.Network/virtualHubs/vwan-con-noea-01"
+      "value": "/subscriptions/4e85c89d-85e4-4ff8-85ba-da26e2c61777/resourceGroups/rg-con-noea-network-01/providers/Microsoft.Network/virtualHubs/vhub-con-noea-vwan-01-norwayeast"
     },
     "virtualNetworkVwanAssociatedRouteTableResourceId": {
       "value": ""
