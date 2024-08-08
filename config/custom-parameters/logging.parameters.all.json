@@ -51,7 +51,8 @@
     },
     "parTags": {
       "value": {
-        "Environment": "Management"
+        "Environment": "Management",
+        "SystemOwner": "Jan-Tore Pedersen"
       }
     },
     "parUseSentinelClassicPricingTiers": {
